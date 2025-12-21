@@ -1,5 +1,5 @@
 import Header from "./components/Header";
-
+import Body from "./components/Body"
 function App() {
 	return (
 		<div className="min-h-screen w-full relative">
@@ -11,6 +11,7 @@ function App() {
 				}}
 			/>
 			<Header />
+			<Body/>
 		</div>
 	);
 }
