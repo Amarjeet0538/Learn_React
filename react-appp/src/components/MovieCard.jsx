@@ -1,21 +1,44 @@
+import Tags from "./Tags";
+import { useState } from "react";
+import DetailCard from "./DetailCard";
 
+const MovieCard = ({ title, imageUrl, type, eps }) => {
+  const [isHovered, setIsHovered] = useState(false);
 
-const MovieCard = ({
-  title ,
-  imageUrl,
-}) => {
-
-  let adult = true;
   return (
-    <div className="m-3 bg-white/20 p-2 rounded-md text-white w-70 h-90">
-      <img src={imageUrl} alt={title} className="w-full h-78 object-cover" />
-      <div className="flex items-center">
-      <div className={`border-none rounded-full w-2 h-2 ${adult ? "bg-amber-200" : "bg-red-200"}`}></div>
-        <h1 className="text-left font-semibold text-lg m-2 truncate">{title}</h1>
+    <div
+      className="m-1 text-white cursor-pointer w-60 h-108 bg-black rounded-lg relative transition-transform duration-300 hover:scale-105 hover:z-20"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Default Movie Card */}
+      <img
+        src={imageUrl}
+        alt={title}
+        className="rounded-lg w-full object-cover"
+      />
+      <div className="flex flex-col my-1 py-1 px-2">
+        <h1 className="font-bold text-lg truncate">
+          {title}
+        </h1>
+        <div className="flex">
+          <Tags content={type}/>
+          <Tags content={eps} type="eps"/>
+        </div>
       </div>
 
+      {/* Detail Card on Hover */}
+      {isHovered && (
+        <DetailCard
+          title={title}
+          imageUrl={imageUrl}
+          type={type}
+          eps={eps}
+        />
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default MovieCard
+
+export default MovieCard;

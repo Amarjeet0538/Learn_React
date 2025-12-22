@@ -1,12 +1,25 @@
-import MovieCard from "./MovieCard"
-import data from "../assets/data.json"
-import data2 from "../assets/data2.json"
-
+import MovieCard from "./MovieCard";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { DATA_URL } from "../utils/constants";
+import DetailCard from "./DetailCard";
 
 const Body = () => {
-  return (
-    <>
-     <div className="flex items-center justify-center font-sans text-white mt-10 m-4 flex-wrap">
+	const [data, setData] = useState([]);
+	const url = DATA_URL;
+
+	useEffect(() => {
+		fetchData();
+	}, []);
+
+	const fetchData = async () => {
+		const res = await axios.get(url);
+		setData(res.data);
+	};
+
+	return (
+		<>
+			{/* <div className="flex items-center justify-center font-sans text-white mt-10 m-4 flex-wrap ">
         <h1 className="w-full text-3xl m-4 ">TV Shows</h1>
         {data2.results.map((content) => {
         return (
@@ -18,23 +31,24 @@ const Body = () => {
         );
       })}
       </div>
+ 			*/}
 
-      
-    <div className="flex items-center justify-center font-sans text-white mt-10 m-4 flex-wrap">
-      <h1 className="w-full text-3xl m-4 ">Movies</h1>
-      {data.results.map((content) => {
-        return (
-          <MovieCard
-            key={content.id}
-            title={content.title.english || content.title.romaji}
-            imageUrl={content.coverImage.large}
-          />
-        );
-      })}
-    </div>
-
-    </>
-  )
-}
+			<div className="flex items-center justify-center font-sans text-white mt-10 m-4 flex-wrap">
+				<h1 className="w-full text-3xl m-4">Anime</h1>
+				{data &&  data.results && data.results.map((content) => {
+						return (
+							<MovieCard
+								key={content.id}
+								title={content.title}
+								imageUrl={content.image}
+								type={content.type}
+								eps={content.episodes}
+							/>
+						);
+					})}
+			</div>
+		</>
+	);
+};
 
 export default Body;
