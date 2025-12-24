@@ -1,54 +1,72 @@
 import MovieCard from "./MovieCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { DATA_URL } from "../utils/constants";
-import DetailCard from "./DetailCard";
+import { MOVIE_DATA_URL, SEARCH_URL } from "../utils/constants";
 
-const Body = () => {
-	const [data, setData] = useState([]);
-	const url = DATA_URL;
+const Body = ({ query }) => {
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		fetchData();
-	}, []);
+  useEffect(() => {
+    fetchMovies(MOVIE_DATA_URL);
+  }, []);
 
-	const fetchData = async () => {
-		const res = await axios.get(url);
-		setData(res.data);
-	};
+  useEffect(() => {
+    if (!query) {
+      fetchMovies(MOVIE_DATA_URL);
+      return;
+    }
 
-	return (
-		<>
-			{/* <div className="flex items-center justify-center font-sans text-white mt-10 m-4 flex-wrap ">
-        <h1 className="w-full text-3xl m-4 ">TV Shows</h1>
-        {data2.results.map((content) => {
-        return (
-          <MovieCard
-            key={content.id}
-            title={content.original_name}
-            imageUrl={"https://image.tmdb.org/t/p/w342" + content.poster_path}
-          />
-        );
-      })}
-      </div>
- 			*/}
+    const timer = setTimeout(() => {
+			console.log("Fetching movies for query:", query);
+      fetchMovies(`${SEARCH_URL}${query}`);
+    }, 500);
 
-			<div className="flex items-center justify-center font-sans text-white mt-10 m-4 flex-wrap">
-				<h1 className="w-full text-3xl m-4">Anime</h1>
-				{data &&  data.results && data.results.map((content) => {
-						return (
-							<MovieCard
-								key={content.id}
-								title={content.title}
-								imageUrl={content.image}
-								type={content.type}
-								eps={content.episodes}
-							/>
-						);
-					})}
-			</div>
-		</>
-	);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+
+	const fetchMovies = async (url) => {
+    try {
+      setLoading(true);
+      const res = await axios.get(url);
+      setMovies(res.data.results || []);
+    } catch (err) {
+      console.error("Failed to fetch movies", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center font-sans text-white mt-10 m-4 flex-wrap">
+      <h1 className="w-full text-3xl m-4">
+        {query ? `Results for "${query}"` : "Trending Movies"}
+      </h1>
+
+      {loading && (
+        <p className="w-full text-center text-white/60">
+          Loading...
+        </p>
+      )}
+
+      {!loading && movies.length === 0 && (
+        <p className="w-full text-center text-white/60">
+          No results found
+        </p>
+      )}
+
+      {movies.map((content) => (
+        <MovieCard
+          key={content.id}
+          title={content.title || content.name}
+          imageUrl={content.poster_path}
+          type={content.media_type}
+          eps={content.episodes}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default Body;
