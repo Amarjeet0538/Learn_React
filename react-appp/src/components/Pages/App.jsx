@@ -1,6 +1,6 @@
-import Header from "./Header";
+import Header from "../Header";
 import Body from "./Body";
-import {useState} from 'react'
+import { useState } from "react";
 
 const App = () => {
 	const [query, setQuery] = useState("");
@@ -15,11 +15,9 @@ const App = () => {
 			/>
 			<Header query={query} setQuery={setQuery} />
 			{console.log("App query:", query)}
-      <Body query={query} />
-
+			<Body query={query} />
 		</div>
 	);
 };
-
 
 export default App;

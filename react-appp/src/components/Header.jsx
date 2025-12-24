@@ -6,7 +6,8 @@ const Left = () => {
 
 const Right = () => {
 	return (
-		<button className="cursor-pointer text-xl py-2 px-4 rounded-lg border border-white">
+		<button className="cursor-pointer text-xl py-2 px-4 rounded-lg border border-white"
+		>
 			Login
 		</button>
 	);
