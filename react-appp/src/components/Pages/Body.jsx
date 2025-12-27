@@ -72,9 +72,9 @@ const Body = ({ query }) => {
 			{movies.map((content) => (
 				<MovieCard
 					key={`${content.id}-${content.media_type}`}
+					adult={content.adult}
 					title={content.title || content.original_title || content.name}
 					overview={content.overview}
-					adult={content.adult}
 					language={
 						LANGUAGE_MAP[content.original_language] || content.original_language
 					}

@@ -17,7 +17,7 @@ const DetailCard = ({ title, imageUrl, type, eps }) => {
         size={40}
         className='absolute top-2 right-2 text-white hover:text-yellow-400 transition-colors duration-300 drop-shadow-lg cursor-pointer'
       />
-      <div className="absolute bottom-0 left-0 right-0 flex flex-col py-3 px-3 bg-gradient-to-t from-black via-black/80 to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 flex flex-col py-3 px-3  from-black via-black/80 to-transparent">
         <h1 className="font-bold text-lg truncate">{title}</h1>
         <div className="flex mt-2">
           <Tags content={type}/>
