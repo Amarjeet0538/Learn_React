@@ -1,6 +1,6 @@
 import MovieCard from "../Cards/MovieCard";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { getHeroMovies, searchMovies } from "../../api/movies";
 import {
 	MOVIE_DATA_URL,
 	SEARCH_URL,
@@ -11,45 +11,41 @@ import ShimmerCard from "../Cards/ShimmerCard";
 const Body = ({ query }) => {
 	const [movies, setMovies] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
 
 	useEffect(() => {
-		fetchMovies(MOVIE_DATA_URL);
-	}, []);
+		let isMounted = true;
+		let timer;
 
-	useEffect(() => {
-		if (!query) {
-			fetchMovies(MOVIE_DATA_URL);
-			return;
+		const loadData = async () => {
+			try {
+				setLoading(true);
+				setError(null);
+
+				const data = query
+					? await searchMovies(`${SEARCH_URL}${query}`)
+					: await getHeroMovies(MOVIE_DATA_URL);
+
+				if (isMounted) setMovies(data);
+			} catch (err) {
+				console.error(err);
+				if (isMounted) setError("Something went wrong. Try again.");
+			} finally {
+				if (isMounted) setLoading(false);
+			}
+		};
+
+		if (query) {
+			timer = setTimeout(loadData, 500);
+		} else {
+			loadData();
 		}
 
-		const timer = setTimeout(() => {
-			fetchMovies(`${SEARCH_URL}${query}`);
-		}, 500);
-
-		return () => clearTimeout(timer);
+		return () => {
+			isMounted = false;
+			clearTimeout(timer);
+		};
 	}, [query]);
-
-	const fetchMovies = async (url) => {
-		try {
-			setLoading(true);
-			const res = await axios.get(url);
-			const results = res.data.results || [];
-
-			// 🔹 Normalize TMDB data
-			const normalized = results.flatMap((item) => {
-				if (item.media_type === "person") {
-					return item.known_for || [];
-				}
-				return item;
-			});
-
-			setMovies(normalized);
-		} catch (err) {
-			console.error("Failed to fetch movies", err);
-		} finally {
-			setLoading(false);
-		}
-	};
 
 	return (
 		<div className="flex items-center justify-center font-sans text-white mt-10 m-4 flex-wrap">
@@ -89,4 +85,3 @@ const Body = ({ query }) => {
 };
 
 export default Body;
-

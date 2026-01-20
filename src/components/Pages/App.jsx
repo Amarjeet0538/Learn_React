@@ -14,7 +14,6 @@ const App = () => {
 				}}
 			/>
 			<Header query={query} setQuery={setQuery} />
-			{console.log("App query:", query)}
 			<Body query={query} />
 		</div>
 	);
